@@ -11,7 +11,7 @@ class NeptuneProjectManager(NeptuneToken):
     Args:
         workspace_name (str): workspace name
         project_name (str): project name
-        key (str): key of f"{workspace_name}/{projectname}"
+        key (str): project identifier of f"{workspace_name}/{projectname}"
 
     Methods:
         create()
@@ -28,13 +28,18 @@ class NeptuneProjectManager(NeptuneToken):
         Args:
             workspace_name (str): workspace name
             project_name (str): project name
-            key (str): key of f"{workspace_name}/{projectname}"
+            key (str): project identifier of f"{workspace_name}/{projectname}"
         """
         super().__init__()
-        self.project_full_name = f"{workspace_name}/{project_name}"
-        self.key = key
+        self.project_full_name: str = f"{workspace_name}/{project_name}"
+        self.key: str = key
 
-    def __call__(self):
+    def get_project_name(self) -> str:
+        """
+        Get project full name; f"{workspace_name}/{projectname}"
+        Returns:
+            str
+        """
         return self.project_full_name
 
     def create(self) -> None:
