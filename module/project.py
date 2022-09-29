@@ -42,6 +42,14 @@ class NeptuneProjectManager(NeptuneToken):
         """
         return self.project_full_name
 
+    def get_key(self) -> str:
+        """
+        Get project key
+        Returns:
+            str
+        """
+        return self.key
+
     def create(self) -> None:
         """
         Create project f"{workspace_name}/{projectname}"
