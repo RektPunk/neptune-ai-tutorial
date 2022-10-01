@@ -8,7 +8,7 @@ from module.variables import NeptuneMode
 class NeptuneExperimentManager:
     """
     Neptune experiment manager\\
-    manage experiment in f"{workspace_name}/{projectname}"
+    manage experiment in f"{workspace_name}/{project_name}"
 
     Args:
         project_manager (NeptuneProjectManager)
@@ -94,7 +94,7 @@ class NeptuneExperimentManager:
 
     def stop(self):
         """
-        End logging
+        End logging and sync
         """
         if self.mode == NeptuneMode.OFFLINE:
             os.environ["NEPTUNE_PROJECT"] = self.project_manager()

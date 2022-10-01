@@ -6,12 +6,12 @@ from module.credential import NeptuneToken
 class NeptuneProjectManager(NeptuneToken):
     """
     Neptune project manager\\
-    Create or delete project named f"{workspace_name}/{projectname}"
+    Create or delete project named f"{workspace_name}/{project_name}"
 
     Args:
         workspace_name (str): workspace name
         project_name (str): project name
-        key (str): project identifier of f"{workspace_name}/{projectname}"
+        key (str): project identifier of f"{workspace_name}/{project_name}"
 
     Methods:
         create()
@@ -28,7 +28,7 @@ class NeptuneProjectManager(NeptuneToken):
         Args:
             workspace_name (str): workspace name
             project_name (str): project name
-            key (str): project identifier of f"{workspace_name}/{projectname}"
+            key (str): project identifier of f"{workspace_name}/{project_name}"
         """
         super().__init__()
         self.project_full_name: str = f"{workspace_name}/{project_name}"
@@ -36,7 +36,7 @@ class NeptuneProjectManager(NeptuneToken):
 
     def get_project_name(self) -> str:
         """
-        Get project full name; f"{workspace_name}/{projectname}"
+        Get project full name; f"{workspace_name}/{project_name}"
         Returns:
             str
         """
@@ -52,7 +52,7 @@ class NeptuneProjectManager(NeptuneToken):
 
     def create(self) -> None:
         """
-        Create project f"{workspace_name}/{projectname}"
+        Create project f"{workspace_name}/{project_name}"
         """
         _projects = management.get_project_list()
         if self.project_full_name not in _projects:
@@ -64,7 +64,7 @@ class NeptuneProjectManager(NeptuneToken):
 
     def delete(self) -> None:
         """
-        Delete project f"{workspace_name}/{projectname}"
+        Delete project f"{workspace_name}/{project_name}"
         """
         _projects = management.get_project_list()
         if self.project_full_name in _projects:
