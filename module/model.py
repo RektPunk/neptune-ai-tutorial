@@ -125,7 +125,8 @@ class NeptuneModelStorageManager:
 
     def change_stage(self, stage: str) -> None:
         _stage = stage.upper()
-        self.model.change_stage(NeptuneModelStage[_stage])
+        if _stage in NeptuneModelStage._member_names_:
+            self.model.change_stage(NeptuneModelStage[_stage])
 
     def stop(self) -> None:
         """

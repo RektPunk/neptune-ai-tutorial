@@ -13,6 +13,7 @@ class NeptuneMode(str, Enum):
 
 
 class NeptuneModelStage(str, Enum):
+    NONE = "none"
     PRODUCTION = "production"
     STAGING = "staging"
     ARCHIVED = "archived"
