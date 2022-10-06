@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Union, Optional
 import neptune.new as neptune
 from module.project import NeptuneProjectManager
 from module.experiment import NeptuneExperimentManager
+from module.variables import NeptuneModelStage
 
 
 class NeptuneModelStorageManager:
@@ -10,6 +11,7 @@ class NeptuneModelStorageManager:
         project_manager: NeptuneProjectManager,
         experiment_manager: Optional[NeptuneExperimentManager],
         key: str,
+        model_id: Optional[int] = None,
         **kwargs,
     ) -> None:
         """
@@ -54,12 +56,21 @@ class NeptuneModelStorageManager:
         finally:
             self._models_url = self.models.get_url()
 
-        self.model = neptune.init_model_version(
-            model=f"{self._project_key}-{self._model_storage_key}",
-            project=self._project_name,
-            api_token=project_manager.neptune_api_token,
-            **kwargs,
-        )
+        if model_id is not None:
+            self._model_id = model_id
+            self.model = neptune.init_model_version(
+                with_id=f"{self._project_key}-{self._model_storage_key}-{self._model_id}",
+                project=self._project_name,
+                api_token=project_manager.neptune_api_token,
+                **kwargs,
+            )
+        else:
+            self.model = neptune.init_model_version(
+                model=f"{self._project_key}-{self._model_storage_key}",
+                project=self._project_name,
+                api_token=project_manager.neptune_api_token,
+                **kwargs,
+            )
         self._model_url = self.model.get_url()
 
     def get_models(self) -> List:
@@ -111,6 +122,10 @@ class NeptuneModelStorageManager:
             tags (Union[List[str], str])
         """
         self.model["sys/tags"].add(tags)
+
+    def change_stage(self, stage: str) -> None:
+        _stage = stage.upper()
+        self.model.change_stage(NeptuneModelStage[_stage])
 
     def stop(self) -> None:
         """
