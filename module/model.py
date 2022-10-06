@@ -1,4 +1,5 @@
 from typing import Any, Dict, List, Union, Optional
+import pandas as pd
 import neptune.new as neptune
 from module.project import NeptuneProjectManager
 from module.experiment import NeptuneExperimentManager
@@ -6,6 +7,27 @@ from module.variables import NeptuneModelStage
 
 
 class NeptuneModelStorageManager:
+    """
+    Neptune model storage manager\\
+    manage models in f"{workspace_name}/{project_name}"
+
+    Args:
+        project_manager (NeptuneProjectManager)
+        experiment_manager (Optional[NeptuneExperimentManager])
+        key: model storage key, f"{project_name}-{key}"
+        model_id: model id, f"{project_name}-{key}-{model_id}"
+
+    Methods:
+        get_models()
+        log_models_info()
+        models_tags()
+        log_model_info()
+        log_run_info()
+        model_tags()
+        change_stage()
+        stop()
+    """
+
     def __init__(
         self,
         project_manager: NeptuneProjectManager,
@@ -15,22 +37,11 @@ class NeptuneModelStorageManager:
         **kwargs,
     ) -> None:
         """
-        Neptune model storage manager\\
-        manage models in f"{workspace_name}/{project_name}"
-
         Args:
             project_manager (NeptuneProjectManager)
             experiment_manager (Optional[NeptuneExperimentManager])
             key: model storage key, f"{project_name}-{key}"
-
-        Methods:
-            get_models()
-            log_models_info()
-            models_tags()
-            log_model_info()
-            log_run_info()
-            model_tags()
-            stop()
+            model_id: model id, f"{project_name}-{key}-{model_id}"
         """
         self._model_storage_key = key.upper()
         self._project_key = project_manager.get_key()
@@ -73,11 +84,11 @@ class NeptuneModelStorageManager:
             )
         self._model_url = self.model.get_url()
 
-    def get_models(self) -> List:
+    def get_models(self) -> pd.DataFrame:
         """
         Get exist models in model storage
         Returns:
-            List: _description_
+            pd.DataFrame
         """
         _models = self.models.fetch_model_versions_table()
         return _models.to_pandas()
@@ -124,6 +135,11 @@ class NeptuneModelStorageManager:
         self.model["sys/tags"].add(tags)
 
     def change_stage(self, stage: str) -> None:
+        """
+        Change model stage
+        Args:
+            stage (str): stage name, one of [None, Production, Staging, Archived]
+        """
         _stage = stage.upper()
         if _stage in NeptuneModelStage._member_names_:
             self.model.change_stage(NeptuneModelStage[_stage])
