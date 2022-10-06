@@ -55,7 +55,7 @@ class NeptuneModelStorageManager:
             self._models_url = self.models.get_url()
 
         self.model = neptune.init_model_version(
-            with_id=f"{self._project_key}-{self._model_storage_key}",
+            model=f"{self._project_key}-{self._model_storage_key}",
             project=self._project_name,
             api_token=project_manager.neptune_api_token,
             **kwargs,
@@ -69,7 +69,7 @@ class NeptuneModelStorageManager:
             List: _description_
         """
         _models = self.models.fetch_model_versions_table()
-        return _models.to_rows()
+        return _models.to_pandas()
 
     def log_models_info(self, name: str, params: Dict[str, Any]) -> None:
         """
