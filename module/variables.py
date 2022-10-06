@@ -10,3 +10,12 @@ class NeptuneMode(str, Enum):
 
     def __repr__(self):
         return f"{self.value}"
+
+
+class NeptuneModelStage(str, Enum):
+    PRODUCTION = "production"
+    STAGING = "staging"
+    ARCHIVED = "archived"
+
+    def __repr__(self):
+        return f"{self.value}"
