@@ -15,7 +15,7 @@ project_manager = NeptuneProjectManager(
 project_manager.create()
 
 ## project delete
-# project_manager.delete()
+project_manager.delete()
 
 ## experiment manager
 experiment_manager = NeptuneExperimentManager(
