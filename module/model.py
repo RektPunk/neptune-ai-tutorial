@@ -46,6 +46,7 @@ class NeptuneModelStorageManager:
         self._model_storage_key = key.upper()
         self._project_key = project_manager.get_key()
         self._project_name = project_manager.get_project_name()
+        self._neptune_api_token = project_manager.neptune_api_token
         self._run_info = (
             experiment_manager.get_run_info() if experiment_manager else None
         )
@@ -54,14 +55,14 @@ class NeptuneModelStorageManager:
             self.models = neptune.init_model(
                 key=self._model_storage_key,
                 project=self._project_name,
-                api_token=project_manager.neptune_api_token,
+                api_token=self._neptune_api_token,
                 **kwargs,
             )
         except:
             self.models = neptune.init_model(
                 with_id=f"{self._project_key}-{self._model_storage_key}",
                 project=self._project_name,
-                api_token=project_manager.neptune_api_token,
+                api_token=self._neptune_api_token,
                 **kwargs,
             )
         finally:
@@ -72,14 +73,14 @@ class NeptuneModelStorageManager:
             self.model = neptune.init_model_version(
                 with_id=f"{self._project_key}-{self._model_storage_key}-{self._model_id}",
                 project=self._project_name,
-                api_token=project_manager.neptune_api_token,
+                api_token=self._neptune_api_token,
                 **kwargs,
             )
         else:
             self.model = neptune.init_model_version(
                 model=f"{self._project_key}-{self._model_storage_key}",
                 project=self._project_name,
-                api_token=project_manager.neptune_api_token,
+                api_token=self._neptune_api_token,
                 **kwargs,
             )
         self._model_url = self.model.get_url()
@@ -143,6 +144,30 @@ class NeptuneModelStorageManager:
         _stage = stage.upper()
         if _stage in NeptuneModelStage._member_names_:
             self.model.change_stage(NeptuneModelStage[_stage])
+
+    def get_stage_model(self, stage: str, **kwargs) -> None:
+        """
+        Change model to latest model with stage
+        Args:
+            stage (str): stage name, one of [None, Production, Staging, Archived]
+        """
+        _stage = stage.upper()
+        if _stage in NeptuneModelStage._member_names_:
+            _models = self.get_models()
+            _candidate_models = _models.loc[
+                _models["sys/stage"] == NeptuneModelStage[_stage]
+            ]
+            if len(_candidate_models) != 0:
+                _stage_model = _candidate_models.sort_values(
+                    "sys/modification_time", ascending=False
+                ).iloc[0]
+                self.model.stop()
+                self.model = neptune.init_model_version(
+                    with_id=_stage_model["sys/id"],
+                    project=self._project_name,
+                    api_token=self._neptune_api_token,
+                    **kwargs,
+                )
 
     def stop(self) -> None:
         """
