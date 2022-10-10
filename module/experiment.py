@@ -100,3 +100,15 @@ class NeptuneExperimentManager:
             os.environ["NEPTUNE_PROJECT"] = self.project_manager()
             os.system("neptune sync")
         self.run.stop()
+
+    def __del__(self):
+        """
+        Destructor
+        """
+        try:
+            if self.mode == NeptuneMode.OFFLINE:
+                os.environ["NEPTUNE_PROJECT"] = self.project_manager()
+                os.system("neptune sync")
+            self.run.stop()
+        except:
+            pass

@@ -175,3 +175,13 @@ class NeptuneModelStorageManager:
         """
         self.models.stop()
         self.model.stop()
+
+    def __del__(self):
+        """
+        Destructor
+        """
+        try:
+            self.models.stop()
+            self.model.stop()
+        except:
+            pass
