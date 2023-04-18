@@ -1,6 +1,6 @@
 import os
 from typing import Any, Dict, List, Optional, Union
-import neptune.new as neptune
+import neptune
 from module.project import NeptuneProjectManager
 from module.variables import NeptuneMode
 
@@ -34,7 +34,7 @@ class NeptuneExperimentManager:
             project_manager (NeptuneProjectManager)
             mode (Optional[str]): neptune mode
         """
-        self.run = neptune.init(
+        self.run = neptune.init_run(
             project=project_manager.get_project_name(),
             api_token=project_manager.neptune_api_token,
             mode=mode,
@@ -42,7 +42,7 @@ class NeptuneExperimentManager:
         )
         self.project_manager = project_manager
         self.mode = mode
-        self.run_url: str = self.run.get_run_url()
+        self.run_url: str = self.run.get_url()
         self.run_id: str = self.run._sys_id
 
     def get_run_info(self) -> Dict[str, str]:

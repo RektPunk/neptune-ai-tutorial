@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Union, Optional
 import pandas as pd
-import neptune.new as neptune
+import neptune
 from module.project import NeptuneProjectManager
 from module.experiment import NeptuneExperimentManager
 from module.variables import NeptuneModelStage
