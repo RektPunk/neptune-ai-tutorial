@@ -7,8 +7,8 @@ from module import (
 ## project init
 project_manager = NeptuneProjectManager(
     workspace_name="rektpunk",
-    project_name="project-name",
-    key="PROJ",
+    project_name="level1",
+    key="LV1",
 )
 
 ## project create
@@ -48,7 +48,6 @@ experiment_manager.upload(
 
 ## stop experiment
 experiment_manager.stop()
-
 
 ## init model storage
 model_storage = NeptuneModelStorageManager(
